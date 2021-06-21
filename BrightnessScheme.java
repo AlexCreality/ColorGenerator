@@ -37,7 +37,8 @@ public class BrightnessScheme {
      * сохранением основного цвета и изменения прозрачности/яркости (насыщен-
      * ность не меняется).
      * 
-     * Пользователь самостоятельно задает цвет
+     * Пользователь самостоятельно задает цвет или прибегает к генерации
+     * исходного цвета для построения схемы.
      * 
      * @param p - если isComplex == true, то p - это число цветов генерации, ед.;
      * если isComplex == false, то p - это процент осветления цвета относительно
@@ -45,6 +46,8 @@ public class BrightnessScheme {
      * @param isComplex - "реле" выбора генерации множества цветов (true - цвета
      * генерируются случайно, false - цвета генерируются с отсчетом от задан-
      * ного цвета R,G,B);
+     * @param isRandom - "реле" выбора генерации множества цветов (случайный
+     * выбор цветов или пользователь сам задает начальный цвет);
      * @param R0 - значение интенсивности красного цвета при детерминирован-
      * ой генерации цветов, ед.;
      * @param G0 - значение интенсивности зеленого цвета при детерминирован-
@@ -54,7 +57,7 @@ public class BrightnessScheme {
      * @return
      */
     
-    public static LinkedList<Integer[]> generateBrightnessScheme(int p, boolean isComplex, int R0, int G0, int B0) {
+    public static LinkedList<Integer[]> generateBrightnessScheme(int p, boolean isComplex, boolean isRandom, int R0, int G0, int B0) {
         //Шаг 0: инициализация переменных:
         LinkedList<Integer[]> colors = new LinkedList();
         Integer[] mas = new Integer[3];
@@ -64,6 +67,12 @@ public class BrightnessScheme {
         int dR;
         int dG;
         int dB;
+        if (isRandom) {
+            //генерация случайных цветов
+            R0 = (int) (20+Math.random()*(240-20));
+            G0 = (int) (20+Math.random()*(240-20));
+            B0 = (int) (20+Math.random()*(240-20));
+        }
         //Шаг 1: работа с генерацией множества цветов:
         if (isComplex) {
         //1.1. Расчет величины шага для каждого цвета:
@@ -74,8 +83,17 @@ public class BrightnessScheme {
         //1.2. Расчет цветов (в т.ч. цвет от пользователя):
                 for (int i = 0; i<=p;i++) {
                     mas[0] = R0+i*dR;
+                    if (mas[0]>255) {
+                        mas[0] = 255;
+                    }
                     mas[1] = G0+i*dG;
+                    if (mas[1]>255) {
+                        mas[1] = 255;
+                    }
                     mas[2] = B0+i*dB;
+                    if (mas[2]>255) {
+                        mas[2] = 255;
+                    }
                     colors.addLast(mas);
                 }
             }
@@ -83,13 +101,31 @@ public class BrightnessScheme {
         //Шаг 2: работа с генерацией одного числа.
             if (p>1) { //пользователь указал проценты, а не доли
                 mas[0] = R0+p/100*(maxR-R0);
+                if (mas[0]>255) {
+                    mas[0] = 255;
+                }
                 mas[1] = G0+p/100*(maxG-G0);
+                if (mas[1]>255) {
+                    mas[1] = 255;
+                }
                 mas[2] = B0+p/100*(maxB-B0);
+                if (mas[2]>255) {
+                    mas[2] = 255;
+                }
                 colors.addLast(mas);
             } else { //пользователь указал доли, а не проценты
                 mas[0] = R0+p*(maxR-R0);
+                if (mas[0]>255) {
+                    mas[0] = 255;
+                }
                 mas[1] = G0+p*(maxG-G0);
+                if (mas[1]>255) {
+                    mas[1] = 255;
+                }
                 mas[2] = B0+p*(maxB-B0);
+                if (mas[2]>255) {
+                    mas[2] = 255;
+                }
                 colors.addLast(mas);
             }
         }
