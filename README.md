@@ -8,4 +8,4 @@ original color (R,G,B from 0 to 255) for generating.
 An algorithm for generating various one or more colors with various brightness via additive color scheme (RGB).
 
 User should determine a number of colors (from original color to absolute white) or a percent to increase
-brightness of orginal color (R,G,B from 0 to 255) for generating.
+brightness of original color (R,G,B from 0 to 255) for generating.
