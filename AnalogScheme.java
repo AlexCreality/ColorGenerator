@@ -18,7 +18,6 @@
 package ColorGenerator;
 
 import java.util.LinkedList;
-import java.util.ResourceBundle;
 
 /**
  *Среда (главный класс) функции генерации цветовой палитры.
@@ -26,9 +25,9 @@ import java.util.ResourceBundle;
  */
 public class AnalogScheme {
      /**
-     * Функция генерации аналоговой цветовой схемы с заданным числом цветов,
-     * выбором случайной или детерминированной генерации цветов и, в случае
-     * последней, с набором начального цвета.
+     * Функция генерации аддитивной аналоговой цветовой схемы с заданным числом
+     * цветов, выбором случайной или детерминированной генерации цветов и, в
+     * случае последней, с набором начального цвета.
      * 
      * Цвет генерируется путем прохода по цветовому кругу с помощью смены
      * значений интенсивности цветов в формате RGB.
@@ -61,14 +60,13 @@ public class AnalogScheme {
     public static LinkedList<Integer[]> generateAnalogScheme(int p, boolean isRandom, int R0, int G0, int B0) {
         //Шаг0: инициализация переменных.
         LinkedList<Integer[]> colors = new LinkedList<>();
-        Integer[] mas = new Integer[3];
+        Integer[] mas = new Integer[p];
         int h = 0; //R ->0, G ->1, B ->2. Смена цветов: R->B->G->R...
         int r = 240-20;
 	//traceln("Размах = "+r);
 	int s_min = 35;
 	int s_max = 120;
 	int s = Math.min(Math.max((int)r/p,s_min),s_max);
-        //System.out.println("Шаг = "+s);
         int R;
         int G;
         int B;
@@ -76,15 +74,14 @@ public class AnalogScheme {
 	//Шаг 1: генерация первоначальных значений цвета.
 	if (isRandom) {	
             //генерация случайных цветов
-            R = (int) (20+Math.random()*(240-20));
-            G = (int) (20+Math.random()*(240-20));
-            B = (int) (20+Math.random()*(240-20));
-            } else {
+            R = (int) (20+Math.random()*r);
+            G = (int) (20+Math.random()*r);
+            B = (int) (20+Math.random()*r);
+        } else {
             R = R0;
             G = G0;
             B = B0;
-            }
-        //System.out.println("R = "+R+", G = "+G+", B = "+B);
+        }
 	/*traceln("R = "+R);
 	traceln("G = "+G);
 	traceln("B = "+B);*/
@@ -92,7 +89,7 @@ public class AnalogScheme {
 	mas[0] = R;
         mas[1] = G;
         mas[2] = B;
-        colors.addLast(new Integer[]{R, G, B});
+        colors.addLast(mas);
         //Шаг 3: выбор цвета отсчета:
         Integer[] diff = new Integer[3];
         for (int i=0;i<diff.length;i++) {
@@ -103,110 +100,105 @@ public class AnalogScheme {
                 h = i;
             }
         }
-        //System.out.println("Начальный цвет = "+h);
         //Шаг 4: генерация оставшихся цветов.
         boolean increase = true;
         for (int j = 1;j<p;j++) { //проход по всем показателям (сегментам) одного кольца;
             switch(h) {
-		case 0:
+		case 0 -> {
                     if (R <= 240-s && increase) {
                         // если от текущего до максимального значения интенсивности красного можно совершить шаг смены цвета
                         R+=s;
-                        //System.out.println("R has changed = "+R);
-                        /*mas[0] = R;
+                        //traceln("R has changed = "+R);
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (R > 240-s) {
                             h = 2;
                             increase = true; // меняем цвет отсчета
-                            //System.out.println("R is near max");
+                            //traceln("R is near max");
                         }
                     } else {
                         // если нельзя увеличить интенсивность красного на размер шага
                         R-=s;
-                        //System.out.println("R has changed = "+R);
+                        //traceln("R has changed = "+R);
                         increase = false;
-                        /*mas[0] = R;
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (R-s <= 20) {
                             h = 2;
                             increase = true; // меняем цвет отсчета
-                            //System.out.println("R is near min");
+                            //traceln("R is near min");
                         }
                     }
-                     break;
                     //}
-		case 1:
+                }
+		case 1 -> {
                     if (G <= 240-s && increase) {
                         // если от текущего до максимального значения интенсивности зеленого можно совершить шаг смены цвета
                         G+=s;
-                        //System.out.println("G has changed = "+G);
-                        /*mas[0] = R;
+                        //traceln("G has changed = "+G);
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (G > 240-s) {
                             h = 0; // меняем цвет отсчета
                             increase = true;
-                            //System.out.println("G is near max");
+                            //traceln("G is near max");
                         }
                     } else {
                         // если нельзя увеличить интенсивность зеленого на размер шага
                         G-=s;
-                        //System.out.println("G has changed = "+G);
+                        //traceln("G has changed = "+G);
                         increase = false;
-                        /*mas[0] = R;
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (G-s <= 20) {
                             h = 0; // меняем цвет отсчета
                             increase = true;
-                            //System.out.println("G is near min");
+                            //traceln("G is near min");
                         }
                     }
                     //}
-                    break;
-		case 2:
+                }
+		case 2 -> {
                     if (B <= 240-s && increase) { // если от текущего до максимального значения интенсивности синего можно совершить шаг смены цвета
                         B+=s;
-                        //System.out.println("B has changed = "+B);
-                        /*mas[0] = R;
+                        //traceln("B has changed = "+B);
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (B > 240-s) {
                             h = 1; // меняем цвет отсчета
                             increase = true;
-                            //System.out.println("B is near max");
+                            //traceln("B is near max");
                         }
                     } else { // если нельзя увеличить интенсивность синего на размер шага
                         B-=s;
-                        //System.out.println("B has changed = "+B);
+                        //traceln("B has changed = "+B);
                         increase = false;
-                        /*mas[0] = R;
+                        mas[0] = R;
                         mas[1] = G;
-                        mas[2] = B;*/
-                        colors.addLast(new Integer[]{R, G, B}); //добавляем в список цветов следующий цвет
+                        mas[2] = B;
+                        colors.addLast(mas); //добавляем в список цветов следующий цвет
                         if (B-s <= 20) {
                             h = 1; // меняем цвет отсчета
                             increase = true;
-                            //System.out.println("B is near min");
+                            //traceln("B is near min");
                         }
                     }
-                    break;
-            }
+                }
+	}
             //if (colorSpectr() == R) { // если цветом отсчета является красный
             //if (colorSpectr() == G) {
             //if (colorSpectr() == B) {
-        }
-        /*for (int i = 0;i<colors.size();i++) {
-            System.out.println("Цвет: R = "+colors.get(i)[0]+", G = "+colors.get(i)[1]+
-                ", B = "+colors.get(i)[2]);
-        }*/
+            	}
     return colors;
-    }       
+    }    
 }
